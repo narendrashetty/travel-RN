@@ -7,11 +7,15 @@ import { StackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import ImageGrid from './ImageGrid';
+import CardView from './CardView';
 
 export default StackNavigator({
   'ImageGrid': {
     'screen': ImageGrid,
-  }
+  },
+  'CardView': {
+    'screen': CardView,
+  },
 }, {
   'cardStyle': {
     'shadowColor': 'transparent',
