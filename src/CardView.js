@@ -14,6 +14,11 @@ import {
 const {height, width} = Dimensions.get('window');
 const padding = 20;
 
+const { width: windowWidth } = Dimensions.get("window");
+
+
+import SharedView from './SharedView';
+
 const swipeDirections = {
   SWIPE_LEFT: 'SWIPE_LEFT',
   SWIPE_RIGHT: 'SWIPE_RIGHT'
@@ -257,6 +262,17 @@ export default class ImageGrid extends Component {
   }
 
   render() {
+    const { photo } = this.props.navigation.state.params;
+    const { name, src, title, subtitle } = photo;
+
+    return (
+      <View style={{flex:1, alignItems: 'center',justifyContent: 'center'}}>
+        <SharedView name={name} containerRouteName='CardView'>
+          <Image source={photo.src} style={styles.image} />
+        </SharedView>
+      </View>
+    );
+
     return (
       <View style={styles.container}>
         <Animated.View
@@ -304,6 +320,11 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
 
+  // image: {
+  //     width: windowWidth,
+  //     height: windowWidth,
+  // },
+
   'image': {
     width: (width - padding * 4),
     height: (width - padding * 4),
@@ -311,10 +332,11 @@ const styles = StyleSheet.create({
   },
 
   'imageTitle': {
+    backgroundColor: 'transparent',
     position: 'absolute',
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 28,
+    fontSize: 30,
     textShadowColor: '#3a3a3a',
     textShadowOffset: {
       width: 1,

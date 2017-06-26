@@ -4,12 +4,14 @@ import {
 } from 'react-native';
 
 import { StackNavigator } from 'react-navigation';
+import { createNavigationContainer, createNavigator, StackRouter } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import ImageGrid from './ImageGrid';
 import CardView from './CardView';
+import Transitioner from './Transitioner';
 
-export default StackNavigator({
+const router = StackRouter({
   'ImageGrid': {
     'screen': ImageGrid,
   },
@@ -41,9 +43,38 @@ export default StackNavigator({
   }
 });
 
+class TransitionerSwitcher extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            transition: 'materialSharedElement',
+            duration: 300,
+        };
+    }
+    render() {
+        return (
+            <Transitioner {...this.props} />
+        );
+    }
+    // For simplicity, we use context to pass these functions to PhotoGridScreen and SettingsScreen
+    // In real apps, we can use Redux to manage the state.
+    static childContextTypes = {
+        setActiveTransition: React.PropTypes.func,
+        getActiveTransition: React.PropTypes.func,
+    }
+    getChildContext() {
+        const self = this;
+        return {
+            setActiveTransition(transition:TransitionName) {
+                self.setState({ transition });
+            },
+            getActiveTransition():TransitionName {
+                return self.state.transition;
+            }
+        }
+    }
+}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  }
-});
+
+export default createNavigationContainer(createNavigator(router)(TransitionerSwitcher));
+

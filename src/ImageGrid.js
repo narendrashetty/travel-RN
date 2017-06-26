@@ -7,81 +7,109 @@ import {
   Image,
   Dimensions,
   ScrollView,
+  ListView,
   Animated,
-  TouchableHighlight
+  TouchableOpacity
 } from 'react-native';
+import _ from 'lodash';
+import SharedView from './SharedView';
 
-const {height, width} = Dimensions.get('window');
-const padding = 20;
+const destinations = [{
+  'id': 0,
+  'name': 'ICELAND',
+  'src': require('./images/iceland.jpg'),
+  'title': 'A ICELAND full of legends',
+  'subtitle': 'Iceland, a sparsely populated island with the North Atlantic all around it and flowing magma bubbling through its crust, is wild and remote all around it and flowing magma bubbling...'
+}, {
+  'id': 1,
+  'name': 'CANADA',
+  'src': require('./images/canada.jpg'),
+  'title': 'A CANADA full of legends',
+  'subtitle': 'Iceland, a sparsely populated island with the North Atlantic all around it and flowing magma bubbling through its crust, is wild and remote all around it and flowing magma bubbling...'
+}, {
+  'id': 2,
+  'name': 'COLOMBIA',
+  'src': require('./images/colombia.jpg'),
+  'title': 'A COLOMBIA full of legends',
+  'subtitle': 'Iceland, a sparsely populated island with the North Atlantic all around it and flowing magma bubbling through its crust, is wild and remote all around it and flowing magma bubbling...'
+}, {
+  'id': 3,
+  'name': 'INDIA',
+  'src': require('./images/india.png'),
+  'title': 'A INDIA full of legends',
+  'subtitle': 'Iceland, a sparsely populated island with the North Atlantic all around it and flowing magma bubbling through its crust, is wild and remote all around it and flowing magma bubbling...'
+}, {
+  'id': 4,
+  'name': 'FINLAND',
+  'src': require('./images/finland.jpg'),
+  'title': 'A FINLAND full of legends',
+  'subtitle': 'Iceland, a sparsely populated island with the North Atlantic all around it and flowing magma bubbling through its crust, is wild and remote all around it and flowing magma bubbling...'
+}, {
+  'id': 5,
+  'name': 'NETHERLANDS',
+  'src': require('./images/amsterdam.jpg'),
+  'title': 'A AMSTERDAM full of legends',
+  'subtitle': 'Iceland, a sparsely populated island with the North Atlantic all around it and flowing magma bubbling through its crust, is wild and remote all around it and flowing magma bubbling...'
+}, {
+  'id': 6,
+  'name': 'ENGLAND',
+  'src': require('./images/london.jpg'),
+  'title': 'A LONDON full of legends',
+  'subtitle': 'Iceland, a sparsely populated island with the North Atlantic all around it and flowing magma bubbling through its crust, is wild and remote all around it and flowing magma bubbling...'
+}, {
+  'id': 7,
+  'name': 'SPAIN',
+  'src': require('./images/barcelona.jpg'),
+  'title': 'A BARCELONA full of legends',
+  'subtitle': 'Iceland, a sparsely populated island with the North Atlantic all around it and flowing magma bubbling through its crust, is wild and remote all around it and flowing magma bubbling...'
+}];
+
+const {width: windowWidth} = Dimensions.get('window');
+const margin = 20;
+const colCount = 2;
+
+const photoWidth = (windowWidth - margin * colCount * 2) / colCount;
+
+
+const photoRows = _.chunk(destinations, colCount);
+
+const ds = new ListView.DataSource({
+    rowHasChanged: (r1, r2) => r1 !== r2,
+});
 
 export default class ImageGrid extends Component {
   static navigationOptions = {
     'title': 'BEST IN TRAVEL'
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      'destinations': [{
-        'name': 'ICELAND',
-        'src': require('./images/iceland.jpg'),
-        'selected': false
-      }, {
-        'name': 'CANADA',
-        'src': require('./images/canada.jpg'),
-        'selected': false
-      }, {
-        'name': 'COLOMBIA',
-        'src': require('./images/colombia.jpg'),
-        'selected': false
-      }, {
-        'name': 'INDIA',
-        'src': require('./images/india.png'),
-        'selected': false
-      }, {
-        'name': 'FINLAND',
-        'src': require('./images/finland.jpg'),
-        'selected': false
-      }, {
-        'name': 'AMSTERDAM',
-        'src': require('./images/amsterdam.jpg'),
-        'selected': false
-      }, {
-        'name': 'LONDON',
-        'src': require('./images/london.jpg'),
-        'selected': false
-      }, {
-        'name': 'BARCELONA',
-        'src': require('./images/barcelona.jpg'),
-        'selected': false
-      }],
-      'imageWidth': new Animated.Value(0),
-    };
+  renderRow(photos) {
+    return (
+        <View style={styles.row}>
+            {photos.map(this.renderCell.bind(this))}
+        </View>
+    );
   }
 
-  renderImage(destination, i) {
-    const imageWidth = this.state.imageWidth.interpolate({
-      inputRange: [0, 100],
-      outputRange: [(width - padding * 3) / 2, (width - padding * 2)],
-      extrapolate: 'clamp'
-    });
+  renderCell(photo) {
+    const onPhotoPressed = photo => this.props.navigation.navigate('CardView', { photo });
     return (
-      <TouchableHighlight onPress={() => this.props.navigation.navigate('CardView')} key={i}>
-        <Animated.View style={styles.imageContainer}>
-          <Image source={destination.src} style={styles.image} />
-          <Text style={styles.imageTitle}>{destination.name}</Text>
-        </Animated.View>
-      </TouchableHighlight>
+      <TouchableOpacity onPress={() => onPhotoPressed(photo)} key={photo.name}>
+          <View style={styles.imageContainer}>
+            <SharedView name={photo.name} containerRouteName='ImageGrid'>
+                <Image source={photo.src} style={styles.image} />
+            </SharedView>
+            <Text style={styles.imageTitle}>{photo.name}</Text>
+          </View>
+      </TouchableOpacity>
     );
   }
 
   render() {
     return (
-      <ScrollView>
-        <View style={styles.container}>
-          {this.state.destinations.map((des, i) => this.renderImage(des, i))}
-        </View>
-      </ScrollView>
+      <ListView
+        dataSource={ds.cloneWithRows(photoRows)}
+        renderRow={this.renderRow.bind(this)}
+      />
     );
   }
 }
@@ -93,22 +121,28 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
 
-  'imageContainer': {
+  row: {
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+
+  'imageContainer': {
     position: 'relative',
-    marginLeft: padding,
-    marginBottom: padding,
+    margin: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   'image': {
-    width: (width - padding * 3) / 2,
-    height: (width - padding * 3) / 2,
+    width: photoWidth,
+    height: photoWidth,
     borderRadius: 4
   },
 
   'imageTitle': {
     position: 'absolute',
+    backgroundColor: 'transparent',
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
