@@ -18,6 +18,7 @@ const { width: windowWidth } = Dimensions.get("window");
 
 
 import SharedView from './SharedView';
+import Toolbar from './Toolbar';
 
 const swipeDirections = {
   SWIPE_LEFT: 'SWIPE_LEFT',
@@ -31,41 +32,49 @@ function isValidSwipe(velocity, velocityThreshold, directionalOffset, directiona
 }
 
 const destinations = [{
+  'id': 0,
   'name': 'ICELAND',
   'src': require('./images/iceland.jpg'),
   'title': 'A ICELAND full of legends',
   'subtitle': 'Iceland, a sparsely populated island with the North Atlantic all around it and flowing magma bubbling through its crust, is wild and remote all around it and flowing magma bubbling...'
 }, {
+  'id': 1,
   'name': 'CANADA',
   'src': require('./images/canada.jpg'),
   'title': 'A CANADA full of legends',
   'subtitle': 'Iceland, a sparsely populated island with the North Atlantic all around it and flowing magma bubbling through its crust, is wild and remote all around it and flowing magma bubbling...'
 }, {
+  'id': 2,
   'name': 'COLOMBIA',
   'src': require('./images/colombia.jpg'),
   'title': 'A COLOMBIA full of legends',
   'subtitle': 'Iceland, a sparsely populated island with the North Atlantic all around it and flowing magma bubbling through its crust, is wild and remote all around it and flowing magma bubbling...'
 }, {
+  'id': 3,
   'name': 'INDIA',
   'src': require('./images/india.png'),
   'title': 'A INDIA full of legends',
   'subtitle': 'Iceland, a sparsely populated island with the North Atlantic all around it and flowing magma bubbling through its crust, is wild and remote all around it and flowing magma bubbling...'
 }, {
+  'id': 4,
   'name': 'FINLAND',
   'src': require('./images/finland.jpg'),
   'title': 'A FINLAND full of legends',
   'subtitle': 'Iceland, a sparsely populated island with the North Atlantic all around it and flowing magma bubbling through its crust, is wild and remote all around it and flowing magma bubbling...'
 }, {
+  'id': 5,
   'name': 'NETHERLANDS',
   'src': require('./images/amsterdam.jpg'),
   'title': 'A AMSTERDAM full of legends',
   'subtitle': 'Iceland, a sparsely populated island with the North Atlantic all around it and flowing magma bubbling through its crust, is wild and remote all around it and flowing magma bubbling...'
 }, {
+  'id': 6,
   'name': 'ENGLAND',
   'src': require('./images/london.jpg'),
   'title': 'A LONDON full of legends',
   'subtitle': 'Iceland, a sparsely populated island with the North Atlantic all around it and flowing magma bubbling through its crust, is wild and remote all around it and flowing magma bubbling...'
 }, {
+  'id': 7,
   'name': 'SPAIN',
   'src': require('./images/barcelona.jpg'),
   'title': 'A BARCELONA full of legends',
@@ -80,11 +89,11 @@ export default class ImageGrid extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pan : new Animated.ValueXY(),
-      currentDestination: 0
+      pan : new Animated.ValueXY({x:-1 * (width - padding * 3) * props.navigation.state.params.photo.id, y: 0}),
+      currentDestination: props.navigation.state.params.photo.id
     };
 
-    this.currentLeft = 0;
+    this.currentLeft = -1 * (width - padding * 3);
 
     this.swipeConfig = {
       velocityThreshold: 0.3,
@@ -92,8 +101,7 @@ export default class ImageGrid extends Component {
     };
   }
   componentWillMount() {
-  
-    this._animatedValueX = 0;
+    this._animatedValueX = -1 * (width - padding * 3) * this.state.currentDestination;
     this._animatedValueY = 0; 
     this.state.pan.x.addListener((value) => this._animatedValueX = value.value);
     this.state.pan.y.addListener((value) => this._animatedValueY = value.value);
@@ -185,8 +193,18 @@ export default class ImageGrid extends Component {
   renderImage(destination, i) {
     return (
       <View style={[styles.imageContainer]} key={i}>
-        <Image source={destination.src} style={styles.image} />
-        <Text style={styles.imageTitle}>{destination.name}</Text>
+        <SharedView name={`image-${destination.name}`} containerRouteName='CardView'>
+          <Image source={destination.src} style={styles.image}>
+          </Image>
+        </SharedView>
+        <SharedView name={`title-${destination.name}`} containerRouteName='CardView' style={{
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              margin: 'auto',
+            }}>
+          <Text style={styles.imageTitle} fontSize={30}>{destination.name}</Text>
+        </SharedView>
       </View>
     );
   }
@@ -249,7 +267,6 @@ export default class ImageGrid extends Component {
   }
 
   renderDescription() {
-    
     const currentCity = destinations[this.state.currentDestination]
     return (
       <View style={styles.desc}>
@@ -265,16 +282,22 @@ export default class ImageGrid extends Component {
     const { photo } = this.props.navigation.state.params;
     const { name, src, title, subtitle } = photo;
 
-    return (
-      <View style={{flex:1, alignItems: 'center',justifyContent: 'center'}}>
-        <SharedView name={name} containerRouteName='CardView'>
-          <Image source={photo.src} style={styles.image} />
-        </SharedView>
-      </View>
-    );
+    // return (
+    //   <View style={styles.container}>
+    //     <View style={[styles.imageSliderContainer, {marginLeft: 20}]} key={name}>
+    //       <SharedView name={`image-${name}`} containerRouteName='CardView'>
+    //         <Image source={photo.src} style={styles.image}>
+    //           <Text style={styles.imageTitle}>{photo.name}</Text>
+    //         </Image>
+    //       </SharedView>
+    //     </View>
+    //     {this.renderDescription()}
+    //   </View>
+    // );
 
     return (
       <View style={styles.container}>
+        <Toolbar />
         <Animated.View
           {...this.panResponder.panHandlers}
           style={[styles.imageSliderContainer, this.state.pan.getLayout()]}
@@ -292,11 +315,11 @@ const styles = StyleSheet.create({
     // flex: 1
   },
   'imageSliderContainer': {
+    'paddingTop': 130,
     flexDirection: 'row',
     paddingLeft: 20,
     paddingRight: 20,
     position : 'absolute',
-    left: 0,
     zIndex: 10,
     height: (width - padding * 4),
   },
@@ -305,14 +328,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
-    marginLeft: 20,
+    marginLeft: 20
   },
 
   'desc': {
-    // height: height - padding * 2 - 200,
+    height: height - padding * 2 - 200,
     marginLeft: 30,
     marginRight: 30,
-    marginTop: 100,
+    marginTop: 120,
     paddingTop: 210,
     width: width - padding * 3,
     backgroundColor: '#fff',
@@ -328,12 +351,14 @@ const styles = StyleSheet.create({
   'image': {
     width: (width - padding * 4),
     height: (width - padding * 4),
-    borderRadius: 4
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   'imageTitle': {
+    textAlign: 'center',
     backgroundColor: 'transparent',
-    position: 'absolute',
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 30,

@@ -19,7 +19,7 @@ class SharedView extends Component {
         // instead of undefined, see https://github.com/facebook/react-native/issues/9382
         return (
             <View collapsable={false}
-                ref={c => this._view = c}>
+                ref={c => this._view = c} style={this.props.style}>
                 {this.props.children}
             </View>
         )

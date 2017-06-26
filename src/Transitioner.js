@@ -214,7 +214,7 @@ export default class MaterialSharedElementTransitioner extends Component {
     });
 
     return {
-      elevation: this._interpolateElevation(props, prevProps, 1), // make sure shared elements stay above the faked container
+      zIndex: this._interpolateElevation(props, prevProps, 1), // make sure shared elements stay above the faked container
       position: 'absolute',
       left,
       top,
@@ -263,22 +263,26 @@ export default class MaterialSharedElementTransitioner extends Component {
     const maxIdx = Math.max(index, prevIndex);
     const inputRange = [minIdx, maxIdx];
     const adaptRange = (range) => index > prevIndex ? range : range.reverse();
+    const opacity = position.interpolate({
+      inputRange,
+      outputRange: [0, 1],
+    });
     const left = position.interpolate({
       inputRange,
-      outputRange: adaptRange([fromItemBBox.left, toItemBBox.left]),
+      outputRange: [100, 30],
     });
     const top = position.interpolate({
       inputRange,
-      outputRange: adaptRange([fromItemBBox.top, toItemBBox.top]),
+      outputRange: [240, 170],
     });
     const { height: windowHeight, width: windowWidth } = Dimensions.get("window");
     const width = position.interpolate({
       inputRange,
-      outputRange: [index > prevIndex ? fromItemBBox.width : toItemBBox.width, windowWidth],
+      outputRange: [windowWidth - 200, windowWidth - 60],
     });
     const height = position.interpolate({
       inputRange,
-      outputRange: [index > prevIndex ? fromItemBBox.height : toItemBBox.height, windowHeight],
+      outputRange: [windowHeight - 240, windowHeight - 240],
     });
     const elevation = this._interpolateElevation(props, prevProps, 0);
     const style = {
@@ -290,15 +294,17 @@ export default class MaterialSharedElementTransitioner extends Component {
       right: null,
       bottom: null,
       width,
-      height,
+      height: windowHeight - 240,
+      borderRadius: 4,
+      opacity
     };
     return <Animated.View style={style} />;
   }
 
   _renderDarkeningOverlay(progress, position, sceneIndex) {
     const backgroundColor = position.interpolate({
-      inputRange: [sceneIndex - 1, sceneIndex, sceneIndex + 0.2, sceneIndex + 1],
-      outputRange: ['rgba(0,0,0,0)', 'rgba(0,0,0,0)', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.5)'],
+      inputRange: [sceneIndex - 1, sceneIndex, sceneIndex + 0.4, sceneIndex + 1],
+      outputRange: ['rgba(185, 199, 209, 0)', 'rgba(185, 199, 209, 0)', 'rgba(185, 199, 209, 0)', 'rgba(185, 199, 209, 1)'],
     });
     const animatedStyle = {
       elevation: 5, // to ensure the overlay covers toolbar
@@ -331,7 +337,13 @@ export default class MaterialSharedElementTransitioner extends Component {
   _renderOverlay(props, prevProps) {
     const fromRoute = prevProps ? prevProps.scene.route.routeName : 'unknownRoute';
     const toRoute = props.scene.route.routeName;
-    const pairs = this.state.sharedItems.getMeasuredItemPairs(fromRoute, toRoute);
+    let pairs = this.state.sharedItems.getMeasuredItemPairs(fromRoute, toRoute);
+
+    if (props.scene.route.params && props.scene.route.params.photo) {
+      const clickedPhoto = props.scene.route.params.photo;
+      pairs = pairs.filter(p => [`image-${clickedPhoto.name}`, `title-${clickedPhoto.name}`].indexOf(p.fromItem.name) > -1);
+    }
+
     const sharedElements = pairs.map((pair, idx) => {
       const {fromItem, toItem} = pair;
       const animatedStyle = this._getSharedElementStyle(props, prevProps, fromItem, toItem);
@@ -342,7 +354,7 @@ export default class MaterialSharedElementTransitioner extends Component {
         element.props.children);
     });
     const containerStyle = this._getOverlayContainerStyle(props.progress);
-
+    
     return (
       <Animated.View style={[styles.overlay, this.props.style, containerStyle]}>
         {this._renderFakedSEContainer(pairs, props, prevProps)}
@@ -351,9 +363,17 @@ export default class MaterialSharedElementTransitioner extends Component {
     );
   }
 
+  _renderHeader(scene) {
+    return (
+      <View style={{height: 200}}>
+      </View>
+    );
+  }
+
   _render(transitionProps, prevtransitionProps) {
     const scenes = transitionProps.scenes.map(scene => this._renderScene(transitionProps, scene));
     const overlay = this._renderOverlay(transitionProps, prevtransitionProps);
+    const header = this._renderHeader(transitionProps.scene);
     return (
       <View style={{flex: 1}}>
         {scenes}

@@ -48,7 +48,6 @@ class TransitionerSwitcher extends Component {
         super(props);
         this.state = {
             transition: 'materialSharedElement',
-            duration: 300,
         };
     }
     render() {

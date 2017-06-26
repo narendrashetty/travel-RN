@@ -1,0 +1,166 @@
+Searching 1473 files for "props.navigationState.index"
+
+0 matches
+
+Searching 1473 files for "elevation"
+
+/Users/nshetty/personal/travel/node_modules/react-native/ReactAndroid/src/androidTest/assets/AndroidTestBundle.js:
+ 25594    opacity: ReactPropTypes.number,
+ 25595  
+ 25596:   elevation: ReactPropTypes.number
+ 25597  });
+ 25598  
+ .....
+ 37158  var rowHeight = 46;
+ 37159  
+ 37160: var elevation = Platform.OS === 'android' ? Number.MAX_SAFE_INTEGER : undefined;
+ 37161  
+ 37162  var styles = StyleSheet.create({
+ .....
+ 37164      height: '100%',
+ 37165      width: '100%',
+ 37166:     elevation: elevation,
+ 37167      position: 'absolute'
+ 37168    },
+ .....
+ 37171      height: '100%',
+ 37172      paddingTop: 5,
+ 37173:     elevation: elevation
+ 37174    },
+ 37175    inspectorButtons: {
+ .....
+ 37219      right: 0,
+ 37220      bottom: 0,
+ 37221:     elevation: elevation
+ 37222    },
+ 37223    listRow: {
+
+/Users/nshetty/personal/travel/node_modules/react-native/ReactAndroid/src/main/java/com/facebook/react/uimanager/BaseViewManager.java:
+   22    private static final String PROP_TRANSFORM = "transform";
+   23    private static final String PROP_OPACITY = "opacity";
+   24:   private static final String PROP_ELEVATION = "elevation";
+   25    private static final String PROP_Z_INDEX = "zIndex";
+   26    private static final String PROP_RENDER_TO_HARDWARE_TEXTURE = "renderToHardwareTextureAndroid";
+   ..
+   69    }
+   70  
+   71:   @ReactProp(name = PROP_ELEVATION)
+   72:   public void setElevation(T view, float elevation) {
+   73      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+   74:       view.setElevation(PixelUtil.toPixelFromDIP(elevation));
+   75      }
+   76      // Do nothing on API < 21
+
+/Users/nshetty/personal/travel/node_modules/react-native/ReactAndroid/src/main/java/com/facebook/react/uimanager/MatrixMathHelper.java:
+  348     * Also, when researching this, remember that:
+  349     * yaw   === heading            === z-axis
+  350:    * pitch === elevation/attitude === y-axis
+  351     * roll  === bank               === x-axis
+  352     */
+
+/Users/nshetty/personal/travel/node_modules/react-native/ReactAndroid/src/main/java/com/facebook/react/views/drawer/ReactDrawerLayoutManager.java:
+   96  
+   97    @Override
+   98:   public void setElevation(ReactDrawerLayout view, float elevation) {
+   99      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+  100        // Facebook is using an older version of the support lib internally that doesn't support
+  101:       // setDrawerElevation so we invoke it using reflection.
+  102        // TODO: Call the method directly when this is no longer needed.
+  103        try {
+  104:         Method method = ReactDrawerLayout.class.getMethod("setDrawerElevation", float.class);
+  105:         method.invoke(view, PixelUtil.toPixelFromDIP(elevation));
+  106        } catch (Exception ex) {
+  107          FLog.w(
+  108              ReactConstants.TAG,
+  109:             "setDrawerElevation is not available in this version of the support lib.",
+  110              ex);
+  111        }
+
+/Users/nshetty/personal/travel/node_modules/react-native/ReactAndroid/src/main/java/com/facebook/react/views/view/ReactViewBackgroundDrawable.java:
+  139    }
+  140  
+  141:   /* Android's elevation implementation requires this to be implemented to know where to draw the shadow. */
+  142    @Override
+  143    public void getOutline(Outline outline) {
+
+/Users/nshetty/personal/travel/node_modules/react-navigation/src/views/Header.js:
+  306        height: StyleSheet.hairlineWidth,
+  307      },
+  308:     elevation: 4,
+  309    },
+  310    appBar: {
+
+24 matches across 6 files
+
+
+Searching 16394 files for "elevation"
+
+/Users/nshetty/personal/travel/ios/build/ModuleCache/2AA46WQKJUG99/AudioToolbox-29TRZLCW5QLKV.pcm:
+    <binary>
+
+/Users/nshetty/personal/travel/ios/build/ModuleCache/2AA46WQKJUG99/CoreAudio-DU322UQPMITA.pcm:
+    <binary>
+
+/Users/nshetty/personal/travel/ios/build/ModuleCache/2AA46WQKJUG99/modules.idx:
+    <binary>
+
+/Users/nshetty/personal/travel/ios/build/ModuleCache/2HBSHDGZX5G9G/AudioToolbox-29TRZLCW5QLKV.pcm:
+    <binary>
+
+/Users/nshetty/personal/travel/ios/build/ModuleCache/2HBSHDGZX5G9G/CoreAudio-DU322UQPMITA.pcm:
+    <binary>
+
+/Users/nshetty/personal/travel/ios/build/ModuleCache/2X7UT0V38BYKA/AudioToolbox-29TRZLCW5QLKV.pcm:
+    <binary>
+
+/Users/nshetty/personal/travel/ios/build/ModuleCache/2X7UT0V38BYKA/CoreAudio-DU322UQPMITA.pcm:
+    <binary>
+
+/Users/nshetty/personal/travel/ios/build/ModuleCache/2X7UT0V38BYKA/modules.idx:
+    <binary>
+
+/Users/nshetty/personal/travel/ios/build/ModuleCache/J19ZK3DSWD6S/AudioToolbox-29TRZLCW5QLKV.pcm:
+    <binary>
+
+/Users/nshetty/personal/travel/ios/build/ModuleCache/J19ZK3DSWD6S/CoreAudio-DU322UQPMITA.pcm:
+    <binary>
+
+/Users/nshetty/personal/travel/ios/build/ModuleCache/J19ZK3DSWD6S/modules.idx:
+    <binary>
+
+/Users/nshetty/personal/travel/node_modules/cssstyle/lib/properties.js:
+ 1326    configurable: true
+ 1327  };
+ 1328: var elevation_export_definition;
+ 1329: elevation_export_definition = {
+ 1330    set: function (v) {
+ 1331:     this._setProperty('elevation', v);
+ 1332    },
+ 1333    get: function () {
+ 1334:     return this.getPropertyValue('elevation');
+ 1335    },
+ 1336    enumerable: true,
+ ....
+ 5248      dominantBaseline: dominantBaseline_export_definition,
+ 5249      "dominant-baseline": dominantBaseline_export_definition,
+ 5250:     elevation: elevation_export_definition,
+ 5251      emptyCells: emptyCells_export_definition,
+ 5252      "empty-cells": emptyCells_export_definition,
+
+/Users/nshetty/personal/travel/node_modules/cssstyle/lib/properties/elevation.js:
+    3  module.exports.definition = {
+    4      set: function (v) {
+    5:         this._setProperty('elevation', v);
+    6      },
+    7      get: function () {
+    8:         return this.getPropertyValue('elevation');
+    9      },
+   10      enumerable: true,
+
+/Users/nshetty/personal/travel/node_modules/cssstyle/tests/tests.js:
+    9   *  see http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-CSS2Properties
+   10   **/
+   11: var properties = [ 'azimuth', 'background', 'backgroundAttachment', 'backgroundColor', 'backgroundImage', 'backgroundPosition', 'backgroundRepeat', 'border', 'borderCollapse', 'borderColor', 'borderSpacing', 'borderStyle', 'borderTop', 'borderRight', 'borderBottom', 'borderLeft', 'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor', 'borderTopStyle', 'borderRightStyle', 'borderBottomStyle', 'borderLeftStyle', 'borderTopWidth', 'borderRightWidth', 'borderBottomWidth', 'borderLeftWidth', 'borderWidth', 'bottom', 'captionSide', 'clear', 'clip', 'color', 'content', 'counterIncrement', 'counterReset', 'cue', 'cueAfter', 'cueBefore', 'cursor', 'direction', 'display', 'elevation', 'emptyCells', 'cssFloat', 'font', 'fontFamily', 'fontSize', 'fontSizeAdjust', 'fontStretch', 'fontStyle', 'fontVariant', 'fontWeight', 'height', 'left', 'letterSpacing', 'lineHeight', 'listStyle', 'listStyleImage', 'listStylePosition', 'listStyleType', 'margin', 'marginTop', 'marginRight', 'marginBottom', 'marginLeft', 'markerOffset', 'marks', 'maxHeight', 'maxWidth', 'minHeight', 'minWidth', 'orphans', 'outline', 'outlineColor', 'outlineStyle', 'outlineWidth', 'overflow', 'padding', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'page', 'pageBreakAfter', 'pageBreakBefore', 'pageBreakInside', 'pause', 'pauseAfter', 'pauseBefore', 'pitch', 'pitchRange', 'playDuring', 'position', 'quotes', 'richness', 'right', 'size', 'speak', 'speakHeader', 'speakNumeral', 'speakPunctuation', 'speechRate', 'stress', 'tableLayout', 'textAlign', 'textDecoration', 'textIndent', 'textShadow', 'textTransform', 'top', 'unicodeBidi', 'verticalAlign', 'visibility', 'voiceFamily', 'volume', 'whiteSpace', 'widows', 'width', 'wordSpacing', 'zIndex'];
+   12  var dashed_properties = properties.map(function (property) {
+   13      return camelToDashed(property);
+

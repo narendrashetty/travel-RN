@@ -9,10 +9,11 @@ import {
   ScrollView,
   ListView,
   Animated,
-  TouchableOpacity
+  TouchableWithoutFeedback
 } from 'react-native';
 import _ from 'lodash';
 import SharedView from './SharedView';
+import Toolbar from './Toolbar';
 
 const destinations = [{
   'id': 0,
@@ -93,23 +94,33 @@ export default class ImageGrid extends Component {
   renderCell(photo) {
     const onPhotoPressed = photo => this.props.navigation.navigate('CardView', { photo });
     return (
-      <TouchableOpacity onPress={() => onPhotoPressed(photo)} key={photo.name}>
+      <TouchableWithoutFeedback onPress={() => onPhotoPressed(photo)} key={photo.name}>
           <View style={styles.imageContainer}>
-            <SharedView name={photo.name} containerRouteName='ImageGrid'>
+            <SharedView name={`image-${photo.name}`} containerRouteName='ImageGrid'>
                 <Image source={photo.src} style={styles.image} />
             </SharedView>
-            <Text style={styles.imageTitle}>{photo.name}</Text>
+            <SharedView name={`title-${photo.name}`} containerRouteName='ImageGrid' style={{
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              margin: 'auto',
+            }}>
+              <Text style={styles.imageTitle} fontSize={16}>{photo.name}</Text>
+            </SharedView>
           </View>
-      </TouchableOpacity>
+      </TouchableWithoutFeedback>
     );
   }
 
   render() {
     return (
-      <ListView
-        dataSource={ds.cloneWithRows(photoRows)}
-        renderRow={this.renderRow.bind(this)}
-      />
+      <View style={styles.container}>
+        <Toolbar />
+        <ListView
+          dataSource={ds.cloneWithRows(photoRows)}
+          renderRow={this.renderRow.bind(this)}
+        />
+      </View>
     );
   }
 }
@@ -117,8 +128,6 @@ export default class ImageGrid extends Component {
 const styles = StyleSheet.create({
   'container': {
     flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
   },
 
   row: {
@@ -137,11 +146,13 @@ const styles = StyleSheet.create({
   'image': {
     width: photoWidth,
     height: photoWidth,
-    borderRadius: 4
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   'imageTitle': {
-    position: 'absolute',
+    textAlign: 'center',
     backgroundColor: 'transparent',
     color: '#fff',
     fontWeight: 'bold',
