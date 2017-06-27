@@ -93,18 +93,9 @@ export default class ImageGrid extends Component {
 
   renderCell(photo) {
     const onPhotoPressed = photo => this.props.navigation.navigate('CardView', { photo });
-    let animatedValue = new Animated.Value(0);
-
-    Animated.timing(      
-      animatedValue,
-      {
-        toValue: 1,       
-        duration: 500 + photo.id * 100,  
-      }
-    ).start(); 
     return (
       <TouchableWithoutFeedback onPress={() => onPhotoPressed(photo)} key={photo.name}>
-          <Animated.View style={[styles.imageContainer, {opacity: animatedValue}]}>
+          <View style={styles.imageContainer}>
             <SharedView name={`image-${photo.name}`} containerRouteName='ImageGrid'>
                 <Image source={photo.src} style={styles.image} />
             </SharedView>
@@ -116,7 +107,7 @@ export default class ImageGrid extends Component {
             }}>
               <Text style={styles.imageTitle} fontSize={16}>{photo.name}</Text>
             </SharedView>
-          </Animated.View>
+          </View>
       </TouchableWithoutFeedback>
     );
   }

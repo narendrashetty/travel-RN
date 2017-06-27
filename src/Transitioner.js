@@ -106,7 +106,7 @@ export default class MaterialSharedElementTransitioner extends Component {
 
   _configureTransition() {
     return {
-      duration: 300,
+      duration: 600,
       // useNativeDriver: false,
     }
   }
@@ -323,9 +323,9 @@ export default class MaterialSharedElementTransitioner extends Component {
   _renderDarkeningOverlay(progress, position, sceneIndex, transitionProps) {
     let bgOutputRange = ['rgba(185, 199, 209, 0)', 'rgba(185, 199, 209, 0)', 'rgba(185, 199, 209, 0)', 'rgba(185, 199, 209, 1)'];
 
-    // if (transitionProps.scene.route.routeName === 'DetailView') {
-    //   bgOutputRange = ['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 1)'];      
-    // }
+    if (transitionProps.scene.route.routeName === 'DetailView') {
+      bgOutputRange = ['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 1)'];      
+    }
 
     const backgroundColor = position.interpolate({
       inputRange: [sceneIndex - 1, sceneIndex, sceneIndex + 0.4, sceneIndex + 1],

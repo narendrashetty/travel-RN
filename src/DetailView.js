@@ -203,7 +203,6 @@ export default class DetailView extends Component {
 				{this.renderHeader(photo)}
 				{this.renderNav()}
 				{this.renderBody(photo)}
-				{this.renderFooter()}
 			</View>
 		);
 	}
