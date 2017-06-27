@@ -106,7 +106,7 @@ export default class MaterialSharedElementTransitioner extends Component {
 
   _configureTransition() {
     return {
-      duration: 600,
+      duration: 300,
       // useNativeDriver: false,
     }
   }
@@ -258,55 +258,80 @@ export default class MaterialSharedElementTransitioner extends Component {
 
     const fromItemBBox = this._getBBox(pairs.map(p => p.fromItem.metrics));
     const toItemBBox = this._getBBox(pairs.map(p => p.toItem.metrics));
+
     const { position, progress, index } = props;
     const prevIndex = prevProps.index;
     const minIdx = Math.min(index, prevIndex);
     const maxIdx = Math.max(index, prevIndex);
     const inputRange = [minIdx, maxIdx];
     const adaptRange = (range) => index > prevIndex ? range : range.reverse();
+    const { height: windowHeight, width: windowWidth } = Dimensions.get("window");
+
+    const fromRoute = prevProps ? prevProps.scene.route.routeName : 'unknownRoute';
+    const toRoute = props.scene.route.routeName;
+
+    let opacityOutputRange = [0, 1];
+    let leftOutputRange = [100, 30];
+    let topOutputRange = [240, 170];
+    let widthOutputRange = [windowWidth - 200, windowWidth - 60];
+    let heightOutputRange = [windowHeight - 240, windowHeight - 240];
+
+    if (fromRoute === 'CardView' && toRoute === 'DetailView') {
+      opacityOutputRange = [0, 1];
+      leftOutputRange = [30, 0];
+      topOutputRange = [170, 0];
+      widthOutputRange = [windowWidth - 60, windowWidth];
+      heightOutputRange = [windowHeight - 240, windowHeight];
+    }
+
     const opacity = position.interpolate({
       inputRange,
-      outputRange: [0, 1],
+      outputRange: opacityOutputRange,
     });
     const left = position.interpolate({
       inputRange,
-      outputRange: [100, 30],
+      outputRange: leftOutputRange,
     });
     const top = position.interpolate({
       inputRange,
-      outputRange: [240, 170],
+      outputRange: topOutputRange,
     });
-    const { height: windowHeight, width: windowWidth } = Dimensions.get("window");
+
     const width = position.interpolate({
       inputRange,
-      outputRange: [windowWidth - 200, windowWidth - 60],
+      outputRange: widthOutputRange,
     });
     const height = position.interpolate({
       inputRange,
-      outputRange: [windowHeight - 240, windowHeight - 240],
+      outputRange: heightOutputRange,
     });
     const elevation = this._interpolateElevation(props, prevProps, 0);
     const style = {
-      backgroundColor: '#e2e2e2',
-      elevation,
+      backgroundColor: '#fff',
+      zIndex: this._interpolateElevation(props, prevProps, 0),
       position: 'absolute',
       left,
       top,
-      right: null,
-      bottom: null,
       width,
-      height: windowHeight - 240,
+      height,
       borderRadius: 4,
       opacity
     };
     return <Animated.View style={style} />;
   }
 
-  _renderDarkeningOverlay(progress, position, sceneIndex) {
+  _renderDarkeningOverlay(progress, position, sceneIndex, transitionProps) {
+    let bgOutputRange = ['rgba(185, 199, 209, 0)', 'rgba(185, 199, 209, 0)', 'rgba(185, 199, 209, 0)', 'rgba(185, 199, 209, 1)'];
+
+    // if (transitionProps.scene.route.routeName === 'DetailView') {
+    //   bgOutputRange = ['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 1)'];      
+    // }
+
     const backgroundColor = position.interpolate({
       inputRange: [sceneIndex - 1, sceneIndex, sceneIndex + 0.4, sceneIndex + 1],
-      outputRange: ['rgba(185, 199, 209, 0)', 'rgba(185, 199, 209, 0)', 'rgba(185, 199, 209, 0)', 'rgba(185, 199, 209, 1)'],
+      outputRange: bgOutputRange,
     });
+
     const animatedStyle = {
       elevation: 5, // to ensure the overlay covers toolbar
       backgroundColor,
@@ -330,7 +355,7 @@ export default class MaterialSharedElementTransitioner extends Component {
     return (
       <Animated.View key={scene.route.key} style={[style, styles.scene]} onLayout={this._onLayout.bind(this)}>
         <Scene navigation={navigation} />
-        {this._renderDarkeningOverlay(progress, position, index)}
+        {this._renderDarkeningOverlay(progress, position, index, transitionProps)}
       </Animated.View>
     );
   }
@@ -339,7 +364,6 @@ export default class MaterialSharedElementTransitioner extends Component {
     const fromRoute = prevProps ? prevProps.scene.route.routeName : 'unknownRoute';
     const toRoute = props.scene.route.routeName;
     let pairs = this.state.sharedItems.getMeasuredItemPairs(fromRoute, toRoute);
-
     if (props.scene.route.params && props.scene.route.params.photo) {
       const clickedPhoto = props.scene.route.params.photo;
       pairs = pairs.filter(p => [`image-${clickedPhoto.name}`, `title-${clickedPhoto.name}`].indexOf(p.fromItem.name) > -1);

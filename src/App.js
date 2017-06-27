@@ -13,12 +13,12 @@ import Transitioner from './Transitioner';
 import DetailView from './DetailView';
 
 const router = StackRouter({
-  // 'ImageGrid': {
-  //   'screen': ImageGrid,
-  // },
-  // 'CardView': {
-  //   'screen': CardView,
-  // },
+  'ImageGrid': {
+    'screen': ImageGrid,
+  },
+  'CardView': {
+    'screen': CardView,
+  },
   'DetailView': {
     'screen': DetailView,
   },

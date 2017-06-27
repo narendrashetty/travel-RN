@@ -14,13 +14,30 @@ import SharedView from './SharedView';
 
 const {height, width} = Dimensions.get('window');
 
+const HEADER_MAX_HEIGHT = 200;
+const HEADER_MIN_HEIGHT = 50;
+const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+
 export default class DetailView extends Component {
 
-	renderHeader() {
+	constructor(props) {
+		super(props);
+		this.state = {
+      'scrollY': new Animated.Value(0)
+    };
+	}
+
+	renderHeader(photo) {
+		const headerHeight = this.state.scrollY.interpolate({
+      inputRange: [-200, 0, HEADER_SCROLL_DISTANCE],
+      outputRange: [400, HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
+      extrapolate: 'clamp',
+    });
+
 		return (
 			<View style={styles.header}>
-				<SharedView name={`image-ICELAND`} containerRouteName='DetailView'>
-					<Image source={require('./images/iceland.jpg')} style={styles.image} />
+				<SharedView name={`image-${photo.name}`} containerRouteName='DetailView'>
+					<Animated.Image source={photo.src} style={[styles.image, {height: headerHeight}]} />
 				</SharedView>
 				<View style={{
 					position: 'absolute',
@@ -35,8 +52,8 @@ export default class DetailView extends Component {
 						justifyContent: 'space-between'
 					}}>
 						<Icon name="search" size={22} color="#fff" style={{marginLeft: 20,'textShadowColor': '#777','textShadowOffset': {'width': 1,'height': 1},'textShadowRadius': 0, backgroundColor: 'transparent'}} />
-						<SharedView name={`title-ICELAND`} containerRouteName='DetailView'>
-							<Text style={styles.imageTitle} fontSize={20}>ICELAND</Text>
+						<SharedView name={`title-${photo.name}`} containerRouteName='DetailView'>
+							<Text style={styles.imageTitle} fontSize={20}>{photo.name}</Text>
 						</SharedView>
 						<Icon name="bars" size={22} color="#fff" style={{marginRight: 20,'textShadowColor': '#777','textShadowOffset': {'width': 1,'height': 1},'textShadowRadius': 0, backgroundColor: 'transparent'}} />
 					</View>
@@ -65,9 +82,16 @@ export default class DetailView extends Component {
 		);
 	}
 
-	renderBody() {
+	renderBody(photo) {
 		return (
-			<ScrollView>
+			<ScrollView 
+				scrollEventThrottle={16}
+        onScroll={
+          Animated.event([{
+            nativeEvent: { contentOffset: { y: this.state.scrollY } }
+          }])
+        }
+			>
 				<View style={{flex: 1, backgroundColor: '#fff', paddingTop: 20}}>
 		      <Text style={[{
 		        color: '#798390',
@@ -76,7 +100,7 @@ export default class DetailView extends Component {
 		        paddingLeft: 20,
 		        paddingRight: 20,
 		      }]}>
-		        A ICELAND full of legends
+		        {photo.title}
 		      </Text>
 
 		      <Text style={{
@@ -87,7 +111,7 @@ export default class DetailView extends Component {
 		        paddingLeft: 20,
 		        paddingRight: 20,
 		      }}>
-		        Iceland, a sparsely populated island with the North Atlantic all around it and flowing magma bubbling through its crust, is wild and remote all around it and flowing magma bubbling..., Iceland, a sparsely populated island with the North Atlantic all around it and flowing magma bubbling through its crust, is wild and remote all around it and flowing magma bubbling..., 
+		        {photo.subtitle} {photo.subtitle}
 		      </Text>
 
 		      <Text style={[{
@@ -103,7 +127,8 @@ export default class DetailView extends Component {
 
 		      <View style={{
 		      	flexDirection: 'row',
-		      	marginTop: 20
+		      	marginTop: 20,
+		      	flexWrap: 'wrap'
 		      }}>
 		      	<View style={{
 		      		backgroundColor: '#83ABEC',
@@ -113,6 +138,42 @@ export default class DetailView extends Component {
 		      	</View>
 		      	<View style={{
 		      		backgroundColor: '#14779A',
+		      		width: width / 2,
+		      		height: width / 2,
+		      	}}>
+		      	</View>
+		      	<View style={{
+		      		backgroundColor: '#E1F400',
+		      		width: width / 2,
+		      		height: width / 2,
+		      	}}>
+		      	</View>
+		      	<View style={{
+		      		backgroundColor: '#DD3B3B',
+		      		width: width / 2,
+		      		height: width / 2,
+		      	}}>
+		      	</View>
+		      	<View style={{
+		      		backgroundColor: '#00E45F',
+		      		width: width / 2,
+		      		height: width / 2,
+		      	}}>
+		      	</View>
+		      	<View style={{
+		      		backgroundColor: '#E26F70',
+		      		width: width / 2,
+		      		height: width / 2,
+		      	}}>
+		      	</View>
+		      	<View style={{
+		      		backgroundColor: '#FFCDC3',
+		      		width: width / 2,
+		      		height: width / 2,
+		      	}}>
+		      	</View>
+		      	<View style={{
+		      		backgroundColor: '#AAD7EB',
 		      		width: width / 2,
 		      		height: width / 2,
 		      	}}>
@@ -136,11 +197,12 @@ export default class DetailView extends Component {
 	}
 
 	render() {
+		const { photo } = this.props.navigation.state.params;
 		return (
-			<View style={{flex: 1}}>
-				{this.renderHeader()}
+			<View style={{flex: 1, backgroundColor: '#fff'}}>
+				{this.renderHeader(photo)}
 				{this.renderNav()}
-				{this.renderBody()}
+				{this.renderBody(photo)}
 				{this.renderFooter()}
 			</View>
 		);

@@ -22,7 +22,9 @@ import Toolbar from './Toolbar';
 
 const swipeDirections = {
   SWIPE_LEFT: 'SWIPE_LEFT',
-  SWIPE_RIGHT: 'SWIPE_RIGHT'
+  SWIPE_RIGHT: 'SWIPE_RIGHT',
+  SWIPE_UP: 'SWIPE_UP',
+  SWIPE_DOWN: 'SWIPE_DOWN',
 };
 
 function isValidSwipe(velocity, velocityThreshold, directionalOffset, directionalOffsetThreshold) {
@@ -119,14 +121,13 @@ export default class ImageGrid extends Component {
         }]),
         onPanResponderRelease: (evt, gestureState) => {
           const swipeDirection = this._getSwipeDirection(gestureState);
-          console.log(swipeDirection);
           this._triggerSwipeHandlers(swipeDirection, gestureState);
         }
     });
   }
 
   _triggerSwipeHandlers(swipeDirection, gestureState) {
-    const {SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
+    const {SWIPE_LEFT, SWIPE_RIGHT, SWIPE_UP} = swipeDirections;
     switch (swipeDirection) {
       case SWIPE_LEFT:
         this.onSwipeLeft(gestureState);
@@ -134,6 +135,8 @@ export default class ImageGrid extends Component {
       case SWIPE_RIGHT:
         this.onSwipeRight(gestureState);
         break;
+      case SWIPE_UP:
+        this.onSwipeUp(gestureState);
       default:
         Animated.spring(this.state.pan, {
           toValue: 0
@@ -175,11 +178,24 @@ export default class ImageGrid extends Component {
     }
   }
 
+  onSwipeUp(gestureState) {
+    const { photo } = this.props.navigation.state.params;
+    this.props.navigation.navigate('DetailView', {
+      photo: destinations[this.state.currentDestination]
+    });
+  }
+
   _getSwipeDirection(gestureState) {
-    const {SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
+    const {SWIPE_LEFT, SWIPE_RIGHT, SWIPE_UP, SWIPE_DOWN} = swipeDirections;
     const {dx, dy} = gestureState;
     if (this._isValidHorizontalSwipe(gestureState)) {
-      return (dx > 0) ? SWIPE_RIGHT : SWIPE_LEFT;
+      return (dx > 0)
+        ? SWIPE_RIGHT
+        : SWIPE_LEFT;
+    } else if (this._isValidVerticalSwipe(gestureState)) {
+      return (dy > 0)
+        ? SWIPE_DOWN
+        : SWIPE_UP;
     }
     return null;
   }
@@ -188,6 +204,12 @@ export default class ImageGrid extends Component {
     const {vx, dy} = gestureState;
     const {velocityThreshold, directionalOffsetThreshold} = this.swipeConfig;
     return isValidSwipe(vx, velocityThreshold, dy, directionalOffsetThreshold);
+  }
+
+  _isValidVerticalSwipe(gestureState) {
+    const {vy, dx} = gestureState;
+    const {velocityThreshold, directionalOffsetThreshold} = this.swipeConfig;
+    return isValidSwipe(vy, velocityThreshold, dx, directionalOffsetThreshold);
   }
 
   renderImage(destination, i) {
