@@ -6,13 +6,14 @@ import {
     UIManager,
     findNodeHandle,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 import { SharedItem } from './SharedItems';
 
 class SharedView extends Component {
     static contextTypes = {
-        registerSharedView: React.PropTypes.func,
-        unregisterSharedView: React.PropTypes.func,
+        registerSharedView: PropTypes.func,
+        unregisterSharedView: PropTypes.func,
     };
     render() {
         // collapsable={false} is required for UIManager.measureInWindow to get the actual measurements

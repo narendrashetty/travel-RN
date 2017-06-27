@@ -8,6 +8,7 @@ import {
     UIManager,
     InteractionManager,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 import { Transitioner, addNavigationHelpers } from 'react-navigation';
 import SharedItems from './SharedItems';
@@ -15,8 +16,8 @@ import SharedItems from './SharedItems';
 export default class MaterialSharedElementTransitioner extends Component {
 
   static childContextTypes = {
-    registerSharedView: React.PropTypes.func,
-    unregisterSharedView: React.PropTypes.func,
+    registerSharedView: PropTypes.func,
+    unregisterSharedView: PropTypes.func,
   }
 
   constructor(props) {
