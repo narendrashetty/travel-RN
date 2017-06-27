@@ -14,7 +14,7 @@ import {
 const {height, width} = Dimensions.get('window');
 const padding = 20;
 
-const { width: windowWidth } = Dimensions.get("window");
+// const { width: windowWidth } = Dimensions.get("window");
 
 
 import SharedView from './SharedView';

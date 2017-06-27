@@ -10,13 +10,17 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import ImageGrid from './ImageGrid';
 import CardView from './CardView';
 import Transitioner from './Transitioner';
+import DetailView from './DetailView';
 
 const router = StackRouter({
-  'ImageGrid': {
-    'screen': ImageGrid,
-  },
-  'CardView': {
-    'screen': CardView,
+  // 'ImageGrid': {
+  //   'screen': ImageGrid,
+  // },
+  // 'CardView': {
+  //   'screen': CardView,
+  // },
+  'DetailView': {
+    'screen': DetailView,
   },
 }, {
   'cardStyle': {
