@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Text,
   View,
+  Platform,
   Image,
   Dimensions,
   ScrollView,
@@ -267,9 +268,13 @@ export default class CardView extends Component {
           color: '#798390',
           fontWeight: '700',
           fontSize: 16,
-          fontFamily: 'Avenir Next',
           paddingLeft: 20,
           paddingRight: 20,
+          ...Platform.select({
+            ios: {
+              fontFamily: 'Avenir Next',
+            },
+          }),
         }]}>
           {des.title}
         </Text>
@@ -278,7 +283,11 @@ export default class CardView extends Component {
           color: '#798390',
           fontSize: 14,
           marginTop: 10,
-          fontFamily: 'Avenir Next',
+          ...Platform.select({
+            ios: {
+              fontFamily: 'Avenir Next',
+            },
+          }),
           paddingLeft: 20,
           paddingRight: 20,
         }}>
