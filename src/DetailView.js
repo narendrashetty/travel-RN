@@ -4,6 +4,7 @@ import {
   Text,
   View,
   Image,
+  Platform,
   Animated,
   Dimensions,
   ScrollView
@@ -107,7 +108,11 @@ export default class DetailView extends Component {
 		        color: '#798390',
 		        fontSize: 14,
 		        marginTop: 10,
-		        fontFamily: 'Avenir Next',
+            ...Platform.select({
+              ios: {
+                fontFamily: 'Avenir Next',
+              },
+            }),
 		        paddingLeft: 20,
 		        paddingRight: 20,
 		      }}>
@@ -117,7 +122,11 @@ export default class DetailView extends Component {
 		      <Text style={[{
 		        color: '#798390',
 		        fontWeight: '700',
-		        fontFamily: 'Avenir Next',
+            ...Platform.select({
+              ios: {
+                fontFamily: 'Avenir Next',
+              },
+            }),
 		        paddingLeft: 20,
 		        paddingRight: 20,
 		        marginTop: 20
@@ -235,7 +244,11 @@ const styles = StyleSheet.create({
   'navText': {
   	color: '#798390',
     fontWeight: '600',
-    fontFamily: 'Avenir Next',
+    ...Platform.select({
+      ios: {
+        fontFamily: 'Avenir Next',
+      },
+    }),
   }
 });
 
