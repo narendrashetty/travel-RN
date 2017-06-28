@@ -83,7 +83,7 @@ const destinations = [{
   'subtitle': 'Iceland, a sparsely populated island with the North Atlantic all around it and flowing magma bubbling through its crust, is wild and remote all around it and flowing magma bubbling...'
 }];
 
-export default class ImageGrid extends Component {
+export default class CardView extends Component {
   static navigationOptions = {
     'title': 'BEST IN TRAVEL'
   };
@@ -303,19 +303,6 @@ export default class ImageGrid extends Component {
   render() {
     const { photo } = this.props.navigation.state.params;
     const { name, src, title, subtitle } = photo;
-
-    // return (
-    //   <View style={styles.container}>
-    //     <View style={[styles.imageSliderContainer, {marginLeft: 20}]} key={name}>
-    //       <SharedView name={`image-${name}`} containerRouteName='CardView'>
-    //         <Image source={photo.src} style={styles.image}>
-    //           <Text style={styles.imageTitle}>{photo.name}</Text>
-    //         </Image>
-    //       </SharedView>
-    //     </View>
-    //     {this.renderDescription()}
-    //   </View>
-    // );
 
     return (
       <View style={styles.container}>
